@@ -13,7 +13,6 @@ public final class Game {
 
 	private LinkedList<Player> players = new LinkedList<Player>();
 	private Player currentPlayer = null;
-	private boolean isGettingOutOfPenaltyBox;
 	private final PrintStream out;
 	private HashMap<String, LinkedList<String>> questions = new HashMap<String, LinkedList<String>>();
 
@@ -58,12 +57,11 @@ public final class Game {
 
 		if (currentPlayer.inPenaltyBox) {
 			if (roll % 2 != 0) {
-				isGettingOutOfPenaltyBox = true;
+				currentPlayer.inPenaltyBox = false;
 				out.println(currentPlayer + " is getting out of the penalty box");
 				currentPlayerMove(roll);
 			} else {
 				out.println(currentPlayer + " is not getting out of the penalty box");
-				isGettingOutOfPenaltyBox = false;
 			}
 		} else
 			currentPlayerMove(roll);
@@ -87,22 +85,22 @@ public final class Game {
 	}
 
 	public boolean playerGivesCorrectAnswer() {
-		if (currentPlayer.inPenaltyBox && !isGettingOutOfPenaltyBox) {
+		if (currentPlayer.inPenaltyBox) {
 			passToNextPlayer();
 			return false;
 		}
 		out.println("Answer was correct!!!!");
 		currentPlayer.purse++;
 		out.println(currentPlayer + " now has " + currentPlayer.purse + " Gold Coins.");
-		boolean winner = didPlayerWin();
+		boolean result = didPlayerWin();
 		passToNextPlayer();
-		return winner;
+		return result;
 	}
 	
 	public boolean playerGivesWrongAnswer() {
 		out.println("Question was incorrectly answered");
-		out.println(currentPlayer + " was sent to the penalty box");
 		currentPlayer.inPenaltyBox = true;
+		out.println(currentPlayer + " was sent to the penalty box");
 		passToNextPlayer();
 		return false;
 	}
