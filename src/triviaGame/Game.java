@@ -117,9 +117,7 @@ public final class Game {
 	}
 
 	private void passToNextPlayer() {
-		currentPlayer++;
-		if (currentPlayer == players.size())
-			currentPlayer = 0;
+		currentPlayer = (currentPlayer + 1) % players.size();
 	}
 
 	public boolean wrongAnswer() {
