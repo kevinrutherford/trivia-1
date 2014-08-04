@@ -11,7 +11,7 @@ public final class GameRunner {
 //	}
 
 	public static void run(Random rand, PrintStream out) {
-		Game game = new Game(out);
+		Game game = new Game(new PrintReporter(out));
 		game.addPlayer("Chet");
 		game.addPlayer("Pat");
 		game.addPlayer("Sue");

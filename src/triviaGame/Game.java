@@ -1,6 +1,5 @@
 package triviaGame;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -13,11 +12,11 @@ public final class Game {
 
 	private LinkedList<Player> players = new LinkedList<Player>();
 	private Player currentPlayer = null;
-	private final PrintStream out;
 	private HashMap<String, LinkedList<String>> questions = new HashMap<String, LinkedList<String>>();
+	private GameListener listener;
 
-	public Game(PrintStream out) {
-		this.out = out;
+	public Game(GameListener listener) {
+		this.listener = listener;
 		createQuestions();
 	}
 
@@ -42,42 +41,36 @@ public final class Game {
 		return (players.size() >= 2);
 	}
 
-	public boolean addPlayer(String playerName) {
+	public void addPlayer(String playerName) {
 		Player player = new Player(playerName);
 		players.add(player);
-		out.println(player + " was added");
-		out.println("They are player number " + players.size());
+		listener.playerAdded(players);
 		currentPlayer = players.getFirst();
-		return true;
 	}
 
 	public void roll(int roll) {
-		out.println(currentPlayer + " is the current player");
-		out.println("They have rolled a " + roll);
-
+		listener.diceRolled(currentPlayer, roll);
 		if (currentPlayer.inPenaltyBox) {
 			if (roll % 2 != 0) {
 				currentPlayer.inPenaltyBox = false;
-				out.println(currentPlayer + " is getting out of the penalty box");
-				currentPlayerMove(roll);
+				listener.playerLeavingPenaltyBox(currentPlayer);
 			} else {
-				out.println(currentPlayer + " is not getting out of the penalty box");
+				listener.playerStayingInPenaltyBox(currentPlayer);
+				return;
 			}
-		} else
-			currentPlayerMove(roll);
+		}
+		currentPlayerMove(roll);
 	}
 
 	private void currentPlayerMove(int roll) {
 		currentPlayer.position = (currentPlayer.position + roll) % 12;
-		out.println(currentPlayer + "'s new location is " + currentPlayer.position);
-		out.println("The category is " + currentCategory());
+		listener.playerMoved(currentPlayer, currentCategory());
 		askQuestion();
 	}
 
 	private void askQuestion() {
-		String category = currentCategory();
-		String question = questions.get(category).removeFirst();
-		out.println(question);
+		String question = questions.get(currentCategory()).removeFirst();
+		listener.questionAsked(question);
 	}
 
 	private String currentCategory() {
@@ -89,18 +82,17 @@ public final class Game {
 			passToNextPlayer();
 			return false;
 		}
-		out.println("Answer was correct!!!!");
 		currentPlayer.purse++;
-		out.println(currentPlayer + " now has " + currentPlayer.purse + " Gold Coins.");
+		listener.correctAnswerGiven(currentPlayer);
 		boolean result = didPlayerWin();
 		passToNextPlayer();
 		return result;
 	}
 	
 	public boolean playerGivesWrongAnswer() {
-		out.println("Question was incorrectly answered");
+		listener.incorrectAnswerGiven();
 		currentPlayer.inPenaltyBox = true;
-		out.println(currentPlayer + " was sent to the penalty box");
+		listener.playerEnteringPenaltyBox(currentPlayer);
 		passToNextPlayer();
 		return false;
 	}
