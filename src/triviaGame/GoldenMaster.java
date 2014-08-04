@@ -1,11 +1,10 @@
 package triviaGame;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public final class GoldenMaster {
 
@@ -15,28 +14,19 @@ public final class GoldenMaster {
 		try {
 			if (!masterFile().exists())
 				generate();
-			return readFileAsString();
+			return readGoldenMaster();
 		} catch (IOException e) {
 			return "";
 		}
 	}
-	
-	private void generate() throws FileNotFoundException {
+
+	private void generate() throws IOException {
 		GameRunner.runAThousandGames(new PrintStream(MASTER_FILENAME));
 	}
 
-	private String readFileAsString() throws IOException {
-		DataInputStream dis = new DataInputStream(new FileInputStream(MASTER_FILENAME));
-		try {
-			long len = masterFile().length();
-			if (len > Integer.MAX_VALUE)
-				throw new IOException("File " + MASTER_FILENAME + " too large, was " + len + " bytes.");
-			byte[] bytes = new byte[(int) len];
-			dis.readFully(bytes);
-			return new String(bytes, "UTF-8");
-		} finally {
-			dis.close();
-		}
+	private String readGoldenMaster() throws IOException {
+		byte[] text = Files.readAllBytes(Paths.get(MASTER_FILENAME));
+		return new String(text, "UTF-8");
 	}
 
 	private File masterFile() {
