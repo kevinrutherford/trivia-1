@@ -1,11 +1,9 @@
-
 package triviaGame;
+
 import java.io.PrintStream;
 import java.util.Random;
 
-
-
-public class GameRunner {
+public final class GameRunner {
 
 	private static boolean notAWinner;
 

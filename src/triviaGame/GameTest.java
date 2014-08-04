@@ -1,14 +1,13 @@
 package triviaGame;
 
 import static org.junit.Assert.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
 import org.junit.Test;
 
-public class GameTest {
+public final class GameTest {
 
 	@Test
 	public void characterizationTest() throws IOException {

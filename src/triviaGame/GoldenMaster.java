@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class GoldenMaster {
+public final class GoldenMaster {
 
 	private static final String MASTER_FILENAME = "./master.txt";
 

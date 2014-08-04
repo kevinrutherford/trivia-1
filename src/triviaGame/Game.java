@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Game {
+public final class Game {
 	private static final String[] board = new String[] {
 		"Pop", "Science", "Sports", "Rock",
 		"Pop", "Science", "Sports", "Rock",
