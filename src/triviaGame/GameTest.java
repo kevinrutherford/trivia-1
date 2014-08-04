@@ -20,16 +20,16 @@ public final class GameTest {
 	@Test
 	public void offByOneError() throws Exception {
 		Game game = new Game(System.out);
-		game.add("player1");
-		game.add("player2");
+		game.addPlayer("player1");
+		game.addPlayer("player2");
 		assertTrue(game.isPlayable());
-		game.add("player3");
+		game.addPlayer("player3");
 		assertTrue(game.isPlayable());
-		game.add("player4");
+		game.addPlayer("player4");
 		assertTrue(game.isPlayable());
-		game.add("player5");
+		game.addPlayer("player5");
 		assertTrue(game.isPlayable());
-		game.add("player6");
+		game.addPlayer("player6");
 		assertTrue(game.isPlayable());
 	}
 }
