@@ -68,32 +68,23 @@ public class Game {
 
 				out.println(players.get(currentPlayer)
 						+ " is getting out of the penalty box");
-				places[currentPlayer] = places[currentPlayer] + roll;
-				if (places[currentPlayer] > 11)
-					places[currentPlayer] = places[currentPlayer] - 12;
-
-				out.println(players.get(currentPlayer) + "'s new location is "
-						+ places[currentPlayer]);
-				out.println("The category is " + currentCategory());
-				askQuestion();
+				currentPlayerMove(roll);
 			} else {
 				out.println(players.get(currentPlayer)
 						+ " is not getting out of the penalty box");
 				isGettingOutOfPenaltyBox = false;
 			}
-
 		} else {
-
-			places[currentPlayer] = places[currentPlayer] + roll;
-			if (places[currentPlayer] > 11)
-				places[currentPlayer] = places[currentPlayer] - 12;
-
-			out.println(players.get(currentPlayer) + "'s new location is "
-					+ places[currentPlayer]);
-			out.println("The category is " + currentCategory());
-			askQuestion();
+			currentPlayerMove(roll);
 		}
 
+	}
+
+	private void currentPlayerMove(int roll) {
+		places[currentPlayer] = (places[currentPlayer] + roll) % 12;
+		out.println(players.get(currentPlayer) + "'s new location is " + places[currentPlayer]);
+		out.println("The category is " + currentCategory());
+		askQuestion();
 	}
 
 	private void askQuestion() {
