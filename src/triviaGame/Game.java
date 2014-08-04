@@ -1,7 +1,7 @@
 package triviaGame;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Game {
@@ -11,7 +11,7 @@ public class Game {
 		"Pop", "Science", "Sports", "Rock"
 	};
 
-	ArrayList<String> players = new ArrayList<String>();
+	LinkedList<String> players = new LinkedList<String>();
 	int[] places = new int[6];
 	int[] purses = new int[6];
 	boolean[] inPenaltyBox = new boolean[6];
@@ -25,18 +25,20 @@ public class Game {
 	boolean isGettingOutOfPenaltyBox;
 	private final PrintStream out;
 
+	private HashMap<String, LinkedList<String>> questions = new HashMap<String, LinkedList<String>>();
+
 	public Game(PrintStream out) {
 		this.out = out;
 		for (int i = 0; i < 50; i++) {
 			popQuestions.addLast("Pop Question " + i);
-			scienceQuestions.addLast(("Science Question " + i));
-			sportsQuestions.addLast(("Sports Question " + i));
-			rockQuestions.addLast(createRockQuestion(i));
+			scienceQuestions.addLast("Science Question " + i);
+			sportsQuestions.addLast("Sports Question " + i);
+			rockQuestions.addLast("Rock Question " + i);
 		}
-	}
-
-	public String createRockQuestion(int index) {
-		return "Rock Question " + index;
+		questions.put("Pop", popQuestions);
+		questions.put("Science", scienceQuestions);
+		questions.put("Sports", sportsQuestions);
+		questions.put("Rock", rockQuestions);
 	}
 
 	public boolean isPlayable() {
@@ -48,7 +50,6 @@ public class Game {
 		places[howManyPlayers()] = 0;
 		purses[howManyPlayers()] = 0;
 		inPenaltyBox[howManyPlayers()] = false;
-
 		out.println(playerName + " was added");
 		out.println("They are player number " + players.size());
 		return true;
@@ -65,19 +66,14 @@ public class Game {
 		if (inPenaltyBox[currentPlayer]) {
 			if (roll % 2 != 0) {
 				isGettingOutOfPenaltyBox = true;
-
-				out.println(players.get(currentPlayer)
-						+ " is getting out of the penalty box");
+				out.println(players.get(currentPlayer) + " is getting out of the penalty box");
 				currentPlayerMove(roll);
 			} else {
-				out.println(players.get(currentPlayer)
-						+ " is not getting out of the penalty box");
+				out.println(players.get(currentPlayer) + " is not getting out of the penalty box");
 				isGettingOutOfPenaltyBox = false;
 			}
-		} else {
+		} else
 			currentPlayerMove(roll);
-		}
-
 	}
 
 	private void currentPlayerMove(int roll) {
@@ -88,14 +84,9 @@ public class Game {
 	}
 
 	private void askQuestion() {
-		if (currentCategory() == "Pop")
-			out.println(popQuestions.removeFirst());
-		if (currentCategory() == "Science")
-			out.println(scienceQuestions.removeFirst());
-		if (currentCategory() == "Sports")
-			out.println(sportsQuestions.removeFirst());
-		if (currentCategory() == "Rock")
-			out.println(rockQuestions.removeFirst());
+		String category = currentCategory();
+		String question = questions.get(category).removeFirst();
+		out.println(question);
 	}
 
 	private String currentCategory() {
@@ -107,28 +98,20 @@ public class Game {
 			if (isGettingOutOfPenaltyBox) {
 				out.println("Answer was correct!!!!");
 				purses[currentPlayer]++;
-				out.println(players.get(currentPlayer) + " now has "
-						+ purses[currentPlayer] + " Gold Coins.");
-
+				out.println(players.get(currentPlayer) + " now has " + purses[currentPlayer] + " Gold Coins.");
 				boolean winner = didPlayerWin();
 				passToNextPlayer();
-
 				return winner;
 			} else {
 				passToNextPlayer();
 				return true;
 			}
-
 		} else {
-
 			out.println("Answer was corrent!!!!");
 			purses[currentPlayer]++;
-			out.println(players.get(currentPlayer) + " now has "
-					+ purses[currentPlayer] + " Gold Coins.");
-
+			out.println(players.get(currentPlayer) + " now has " + purses[currentPlayer] + " Gold Coins.");
 			boolean winner = didPlayerWin();
 			passToNextPlayer();
-
 			return winner;
 		}
 	}
@@ -143,7 +126,6 @@ public class Game {
 		out.println("Question was incorrectly answered");
 		out.println(players.get(currentPlayer) + " was sent to the penalty box");
 		inPenaltyBox[currentPlayer] = true;
-
 		passToNextPlayer();
 		return true;
 	}
