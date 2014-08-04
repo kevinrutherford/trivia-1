@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Game {
+	private static final String[] board = new String[] {
+		"Pop", "Science", "Sports", "Rock",
+		"Pop", "Science", "Sports", "Rock",
+		"Pop", "Science", "Sports", "Rock"
+	};
+
 	ArrayList<String> players = new ArrayList<String>();
 	int[] places = new int[6];
 	int[] purses = new int[6];
@@ -102,25 +108,7 @@ public class Game {
 	}
 
 	private String currentCategory() {
-		if (places[currentPlayer] == 0)
-			return "Pop";
-		if (places[currentPlayer] == 4)
-			return "Pop";
-		if (places[currentPlayer] == 8)
-			return "Pop";
-		if (places[currentPlayer] == 1)
-			return "Science";
-		if (places[currentPlayer] == 5)
-			return "Science";
-		if (places[currentPlayer] == 9)
-			return "Science";
-		if (places[currentPlayer] == 2)
-			return "Sports";
-		if (places[currentPlayer] == 6)
-			return "Sports";
-		if (places[currentPlayer] == 10)
-			return "Sports";
-		return "Rock";
+		return board[places[currentPlayer]];
 	}
 
 	public boolean wasCorrectlyAnswered() {
