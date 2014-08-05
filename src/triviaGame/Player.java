@@ -6,9 +6,11 @@ public class Player {
 	boolean inPenaltyBox;
 	int purse;
 	int position;
+	private GameListener listener;
 
-	public Player(String playerName) {
+	public Player(String playerName, GameListener listener) {
 		this.playerName = playerName;
+		this.listener = listener;
 		this.inPenaltyBox = false;
 		this.purse = 0;
 		this.position = 0;

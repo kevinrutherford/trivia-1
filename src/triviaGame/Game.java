@@ -4,16 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public final class Game {
-	private static final String[] board = new String[] {
-		"Pop", "Science", "Sports", "Rock",
-		"Pop", "Science", "Sports", "Rock",
-		"Pop", "Science", "Sports", "Rock"
-	};
-
 	private LinkedList<Player> players = new LinkedList<Player>();
 	private Player currentPlayer = null;
 	private HashMap<String, LinkedList<String>> questions = new HashMap<String, LinkedList<String>>();
 	private GameListener listener;
+	private Board board = new Board();
 
 	public Game(GameListener listener) {
 		this.listener = listener;
@@ -42,7 +37,7 @@ public final class Game {
 	}
 
 	public void addPlayer(String playerName) {
-		Player player = new Player(playerName);
+		Player player = new Player(playerName, listener);
 		players.add(player);
 		listener.playerAdded(players);
 		currentPlayer = players.getFirst();
@@ -51,15 +46,19 @@ public final class Game {
 	public void roll(int roll) {
 		listener.diceRolled(currentPlayer, roll);
 		if (currentPlayer.inPenaltyBox) {
-			if (roll % 2 != 0) {
-				currentPlayer.inPenaltyBox = false;
-				listener.playerLeavingPenaltyBox(currentPlayer);
-			} else {
+			if (isEvenNumber(roll)) {
 				listener.playerStayingInPenaltyBox(currentPlayer);
 				return;
+			} else {
+				currentPlayer.inPenaltyBox = false;
+				listener.playerLeavingPenaltyBox(currentPlayer);
 			}
 		}
 		currentPlayerMove(roll);
+	}
+
+	private boolean isEvenNumber(int roll) {
+		return roll % 2 == 0;
 	}
 
 	private void currentPlayerMove(int roll) {
@@ -74,16 +73,14 @@ public final class Game {
 	}
 
 	private String currentCategory() {
-		return board[currentPlayer.position];
+		return board.category(currentPlayer.position);
 	}
 
 	public boolean playerGivesCorrectAnswer() {
-		if (currentPlayer.inPenaltyBox) {
-			passToNextPlayer();
-			return false;
+		if (!currentPlayer.inPenaltyBox) {
+			listener.correctAnswerGiven(currentPlayer);
+			currentPlayer.purse++;
 		}
-		currentPlayer.purse++;
-		listener.correctAnswerGiven(currentPlayer);
 		boolean result = didPlayerWin();
 		passToNextPlayer();
 		return result;
